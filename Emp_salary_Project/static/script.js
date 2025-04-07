@@ -169,7 +169,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Clear chat history
     clearHistoryBtn.addEventListener('click', async function() {
         try {
-            const response = await fetch('/clear-history', {
+            // Get employee ID from session storage
+            const employeeId = sessionStorage.getItem('employee_uuid');
+            
+            if (!employeeId) {
+                addMessage('Please log in first', 'system');
+                return;
+            }
+            
+            const response = await fetch(`/clear-history/${employeeId}`, {
                 method: 'POST'
             });
             
@@ -184,21 +192,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Logout functionality
     logoutBtn.addEventListener('click', function() {
-        currentEmployeeId = '';
-        employeeVerified = false;
-        if (currentEmployeeIdDisplay) {
-            currentEmployeeIdDisplay.textContent = 'Not verified';
-        }
-        userInput.disabled = true;
-        sendButton.disabled = true;
+        // Clear session storage
+        sessionStorage.removeItem('employee_uuid');
+        sessionStorage.removeItem('employee_name');
         
-        // Reset employee ID input
-        if (employeeIdInput) {
-            employeeIdInput.value = '';
-        }
-        
-        // Add system message
-        addMessage('Logged out. Please verify your employee ID to continue.', 'system');
+        // Redirect to login page
+        window.location.href = '/login';
     });
     
     // Upload document with employee ID
@@ -331,7 +330,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load chat history
     async function loadChatHistory() {
         try {
-            const response = await fetch('/chat-history');
+            // Get the employee UUID from session storage
+            const employeeId = sessionStorage.getItem('employee_uuid');
+            
+            if (!employeeId) {
+                // No logged in user, redirect to login
+                window.location.href = '/login';
+                return;
+            }
+            
+            // Update the current employee ID (for internal use only)
+            currentEmployeeId = employeeId;
+            
+            // Enable chat UI
+            userInput.disabled = false;
+            sendButton.disabled = false;
+            
+            // Get employee-specific chat history
+            const response = await fetch(`/chat-history/${employeeId}`);
             
             if (response.ok) {
                 const data = await response.json();
@@ -340,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chatMessages.innerHTML = '';
                 
                 // Add welcome message
-                addMessage('Welcome to the Salary Information Assistant! Please verify your employee ID to start asking questions.', 'system');
+                addMessage('Welcome to the Salary Information Assistant! You can now ask questions about your salary information.', 'system');
                 
                 // Add messages from history
                 if (data.chat_history && data.chat_history.length > 0) {
@@ -351,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error loading chat history:', error);
+            addMessage('Error loading chat history. Please try refreshing the page.', 'system');
         }
     }
     

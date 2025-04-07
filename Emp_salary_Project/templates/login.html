@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Information Assistant - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="d-flex align-items-center justify-content-center bg-light">
+    <div class="login-container">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <h3>Employee Salary Assistant</h3>
+                <p class="mb-0">Login to access your salary information</p>
+            </div>
+            <div class="card-body p-4">
+                <form id="login-form" autocomplete="off">
+                    <div class="mb-4">
+                        <label for="employee-uuid" class="form-label">Employee UUID</label>
+                        <input type="text" class="form-control form-control-lg" id="employee-uuid" 
+                               placeholder="Enter your UUID" required autocomplete="new-password" 
+                               autocorrect="off" autocapitalize="off" spellcheck="false">
+                        <div class="form-text">Your unique employee identifier</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div id="login-status" class="text-center"></div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small class="text-muted">Contact HR if you need assistance with your UUID</small>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/login.js"></script>
+</body>
+</html>

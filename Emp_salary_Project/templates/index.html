@@ -17,55 +17,6 @@
                     <button id="logout-btn" class="btn btn-sm btn-outline-secondary">Logout</button>
                 </div>
                 
-                <!-- Employee Authentication Section -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Employee Verification</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="employee-id" class="form-label">Employee ID</label>
-                            <input type="text" class="form-control" id="employee-id" placeholder="Enter your ID">
-                        </div>
-                        <button id="verify-employee" class="btn btn-primary w-100">Verify</button>
-                        <div id="employee-status" class="mt-2"></div>
-                    </div>
-                </div>
-                
-                <!-- Database Connection Panel (Optional) -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Database Settings (Optional)</h5>
-                        <small class="text-muted">Database is connected automatically</small>
-                    </div>
-                    <div class="card-body">
-                        <form id="db-form">
-                            <div class="mb-3">
-                                <label for="host" class="form-label">Host</label>
-                                <input type="text" class="form-control" id="host" value="localhost">
-                            </div>
-                            <div class="mb-3">
-                                <label for="port" class="form-label">Port</label>
-                                <input type="text" class="form-control" id="port" value="3306">
-                            </div>
-                            <div class="mb-3">
-                                <label for="user" class="form-label">User</label>
-                                <input type="text" class="form-control" id="user" value="root">
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password">
-                            </div>
-                            <div class="mb-3">
-                                <label for="database" class="form-label">Database</label>
-                                <input type="text" class="form-control" id="database" value="employee_salary_db">
-                            </div>
-                            <button type="submit" class="btn btn-outline-primary w-100">Connect Manually</button>
-                        </form>
-                        <div id="connection-status" class="mt-3 text-center"></div>
-                    </div>
-                </div>
-                
                 <!-- Document Upload Section -->
                 <div class="card mb-4">
                     <div class="card-header">
@@ -74,19 +25,20 @@
                     <div class="card-body">
                         <form id="upload-form" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label for="document" class="form-label">Upload Document</label>
+                                <label for="document" class="form-label">Upload Salary Document</label>
                                 <input type="file" class="form-control" id="document" accept=".pdf,.csv,.txt">
                                 <div class="form-text">Supported formats: PDF, CSV, TXT</div>
                             </div>
                             <button type="submit" class="btn btn-success w-100">Upload</button>
                         </form>
+                        <div id="upload-status" class="mt-2"></div>
                     </div>
                 </div>
                 
                 <!-- Document Search Section -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0">Document Search</h5>
+                        <h5 class="mb-0">Search Documents</h5>
                     </div>
                     <div class="card-body">
                         <form id="query-form">
@@ -106,18 +58,17 @@
             <div class="col-md-9 chat-container">
                 <div class="chat-header">
                     <h2>Salary Information Assistant</h2>
-                    <div class="employee-info">Employee ID: <span id="current-employee-id">Not verified</span></div>
                 </div>
                 <div id="chat-messages" class="chat-messages">
                     <div class="message system">
-                        Welcome to Salary Information Assistant! Please verify your employee ID to start asking questions.
+                        Welcome to Salary Information Assistant! You can ask questions about your salary, deductions, and leave balance.
                     </div>
                 </div>
                 <div class="chat-input-container">
                     <form id="chat-form">
                         <div class="input-group">
-                            <input type="text" id="user-input" class="form-control" placeholder="Ask about your salary, deductions, or leave balance..." disabled>
-                            <button type="submit" class="btn btn-primary" disabled>Send</button>
+                            <input type="text" id="user-input" class="form-control" placeholder="Ask about your salary, deductions, or leave balance...">
+                            <button type="submit" class="btn btn-primary">Send</button>
                         </div>
                     </form>
                 </div>
