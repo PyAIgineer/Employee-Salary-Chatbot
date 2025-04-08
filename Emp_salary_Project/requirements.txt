@@ -14,3 +14,4 @@ chromadb
 pypdf
 "pip install fastapi uvicorn python-dotenv langchain-groq langchain-community langchain-core/
 langchain-text-splitters pydantic jinja2 mysql-connector-python sentence-transformers chromadb"
+pip install docx2txt

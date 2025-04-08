@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Salary Portal - Chat</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-name {
+            margin-right: 15px;
+            font-weight: 500;
+        }
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .clear-history-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .chat-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 230px);
+        }
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+        }
+        .user .message-content {
+            background-color: #3498db;
+            color: white;
+        }
+        .ai .message-content {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .send-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .suggestion {
+            display: inline-block;
+            background-color: #f2f2f2;
+            padding: 8px 16px;
+            border-radius: 18px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            transition: background-color 0.2s;
+        }
+        .suggestion:hover {
+            background-color: #e5e5e5;
+        }
+        .suggestions-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 15px;
+        }
+        .loader-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .pre-formatted {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Employee Salary Portal</h1>
+        <div class="user-info">
+            <button id="clear-history" class="clear-history-btn">Clear History</button>
+            <span id="user-name" class="user-name">Loading...</span>
+            <button id="logout" class="logout-btn">Logout</button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai">
+                    <div class="message-content">
+                        Welcome to the Employee Salary Portal. How can I help you today?
+                    </div>
+                </div>
+            </div>
+            
+            <div id="loader" class="loader">
+                <div class="loader-spinner"></div>
+            </div>
+            
+            <div class="suggestions-container" id="suggestions-container">
+                <div class="suggestion" onclick="selectSuggestion('What was my salary last month?')">What was my salary last month?</div>
+                <div class="suggestion" onclick="selectSuggestion('Show my leave balance')">Show my leave balance</div>
+                <div class="suggestion" onclick="selectSuggestion('Why was my salary lower in March?')">Why was my salary lower in March?</div>
+                <div class="suggestion" onclick="selectSuggestion('When is my next salary payment?')">When is my next salary payment?</div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Type your question here...">
+                <button class="send-btn" id="send-button">
+                    ➤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const chatMessages = document.getElementById('chat-messages');
+            const userNameElement = document.getElementById('user-name');
+            const logoutButton = document.getElementById('logout');
+            const clearHistoryButton = document.getElementById('clear-history');
+            const loader = document.getElementById('loader');
+            
+            let employeeInfo = null;
+            
+            // Check authentication
+            const checkAuth = async () => {
+                try {
+                    const response = await fetch('/chat-history', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        // Not authenticated, redirect to login
+                        window.location.href = '/';
+                        return;
+                    }
+                    
+                    // Load chat history
+                    const data = await response.json();
+                    if (data.chat_history && data.chat_history.length > 0) {
+                        loadChatHistory(data.chat_history);
+                    }
+                    
+                    // Get user info by cookie session
+                    // We'll need to add an endpoint for this in app.py
+                    try {
+                        const userInfoResponse = await fetch('/user-info', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (userInfoResponse.ok) {
+                            const userInfo = await userInfoResponse.json();
+                            employeeInfo = userInfo;
+                            userNameElement.textContent = userInfo.name;
+                        }
+                    } catch (error) {
+                        console.error('Failed to get user info:', error);
+                    }
+                } catch (error) {
+                    console.error('Auth check failed:', error);
+                    window.location.href = '/';
+                }
+            };
+            
+            // Load chat history
+            const loadChatHistory = (history) => {
+                // Clear existing messages except welcome message
+                while (chatMessages.children.length > 1) {
+                    chatMessages.removeChild(chatMessages.lastChild);
+                }
+                
+                // Add messages from history
+                history.forEach(message => {
+                    const messageElement = createMessageElement(message.role, message.content);
+                    chatMessages.appendChild(messageElement);
+                });
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+            
+            // Create message element
+            const createMessageElement = (role, content) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${role}`;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                
+                // Format content with line breaks
+                contentDiv.classList.add('pre-formatted');
+                contentDiv.textContent = content;
+                
+                messageDiv.appendChild(contentDiv);
+                return messageDiv;
+            };
+            
+            // Send message
+            const sendMessage = async () => {
+                const message = messageInput.value.trim();
+                if (!message) return;
+                
+                // Clear input
+                messageInput.value = '';
+                
+                // Add user message to chat
+                const userMessageElement = createMessageElement('user', message);
+                chatMessages.appendChild(userMessageElement);
+                
+                // Show loader
+                loader.style.display = 'block';
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+                    
+                    // Hide loader
+                    loader.style.display = 'none';
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Add AI response to chat
+                        const aiMessageElement = createMessageElement('ai', data.response);
+                        chatMessages.appendChild(aiMessageElement);
+                        
+                        // Scroll to bottom
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    } else {
+                        console.error('Failed to get response');
+                        
+                        // Add error message
+                        const errorMessageElement = createMessageElement('ai', 'Sorry, I encountered an error processing your request.');
+                        chatMessages.appendChild(errorMessageElement);
+                    }
+                } catch (error) {
+                    console.error('Message sending failed:', error);
+                    
+                    // Hide loader
+                    loader.style.display = 'none';
+                    
+                    // Add error message
+                    const errorMessageElement = createMessageElement('ai', 'Sorry, there was a network error. Please try again.');
+                    chatMessages.appendChild(errorMessageElement);
+                }
+            };
+            
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Logout function
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await fetch('/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    window.location.href = '/';
+                } catch (error) {
+                    console.error('Logout failed:', error);
+                }
+            });
+            
+            // Clear history function
+            clearHistoryButton.addEventListener('click', async () => {
+                try {
+                    await fetch('/clear-history', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    // Clear UI except welcome message
+                    while (chatMessages.children.length > 1) {
+                        chatMessages.removeChild(chatMessages.lastChild);
+                    }
+                } catch (error) {
+                    console.error('Clear history failed:', error);
+                }
+            });
+            
+            // Initialize
+            checkAuth();
+        });
+        
+        // Suggestion function
+        function selectSuggestion(text) {
+            document.getElementById('message-input').value = text;
+            document.getElementById('send-button').click();
+        }
+    </script>
+</body>
+</html>
